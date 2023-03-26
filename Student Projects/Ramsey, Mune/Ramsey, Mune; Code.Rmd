@@ -1,0 +1,136 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+```{r}
+library(lubridate)
+library(tidyverse)
+```
+
+
+This is an [R Markdown](https://urldefense.com/v3/__http://rmarkdown.rstudio.com__;!!DZ3fjg!4dnyv6PexlKXWypBLt5HfZJXfxt1St5ykPOqrkmChv3uoIJgWqZKIDz41D0elAC0oMGdk-xXk0vYl1TTrhH9rt3r$ ) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+|-
+
+swim advisory = was there one issued [Y/N]
+
+each individual set baced on name have 108 rowes and 6 Columbussys.
+
+trying to get rid of the outliers (-1000 & +1500) in the scatterplot to make a more acurate histogram but donno how will ask 7/8/2022 (tommorow)
+
+```{r}
+beach2 = beach
+beach3 = beach2 %>% filter(Predicted.Level > 7.5)
+beach3$Date = mdy(beach3$Date)
+
+```
+
+```{r}
+M = beach3 %>% filter(Beach.Name == "Montrose")
+C = beach3 %>% filter(Beach.Name == "Calumet")
+rd = beach3 %>% filter(Beach.Name == "63rdStreet")
+FO = beach3 %>% filter(Beach.Name == "Foster")
+L = beach3 %>% filter(Beach.Name == "Leone")
+OH = beach3 %>% filter(Beach.Name == "Ohio")
+OA = beach3 %>% filter(Beach.Name == "OakStreet")
+OS = beach3 %>% filter(Beach.Name == "Osterman")
+R = beach3 %>% filter(Beach.Name == "Rainbow")
+```
+
+```{r}
+plot(beach3$Date, beach3$Predicted.Level, xlab = "Date", ylab = "predicted level", main =
+    "scatter plt of date to PL for all", pch = 16, col = "black")
+
+```
+
+```{r}
+summary(beach3 %>% select(c("Predicted.Level", "Swim.Advisory")))
+```
+```{r}
+
+plot(M$Date, M$Predicted.Level, xlab = "Date", ylab = "Predicted Level", main =
+    "scatter plot of date to Predicted Level for Montrose", pch = 16, type = "l", col = "brown3")
+
+#points(M$Date[which.max(M$Predicted.Level)], M$Predicted.Level[which.max(M$Predicted.Level)], pch = "x", col = "red")
+
+plot(C$Date, C$Predicted.Level, xlab = "Date", ylab = "Predicted Level", main =
+    "scatter plot of date to Predicted Level for Calumet", pch = 16, type = "l", col = "cadetblue4")
+
+plot(rd$Date, rd$Predicted.Level, xlab = "Date", ylab = "Predicted Level", main =
+    "scatter plot of date to Predicted Level for 63rdStreet", pch = 16, type = "l", col = "khaki4")
+
+plot(FO$Date, FO$Predicted.Level, xlab = "Date", ylab = "Predicted Level", main =
+    "scatter plot of date to Predicted Level for Foster", pch = 16, type = "l", col = "maroon4")
+
+plot(L$Date, L$Predicted.Level, xlab = "Date", ylab = "Pedicted Level", main =
+    "scatter plot of date to Predicted Level for Leone", pch = 16, type = "l", col = "lightgoldenrod4")
+
+plot(OH$Date, OH$Predicted.Level, xlab = "Date", ylab = "Predicted Level", main =
+    "scatter plot of date to Predicted Level for Ohio", pch = 16, type = "l", col = "maroon")
+
+plot(OA$Date, OA$Predicted.Level, xlab = "Date", ylab = "Predicted Level", main =
+    "scatter plot of date to Predicted Level for OakStreet", pch = 16, type = "l", col = "paleturquoise4")
+
+plot(OS$Date, OS$Predicted.Level, xlab = "Date", ylab = "Predicted Level", main =
+    "scatter plot of date to Predicted LevelL for Oasterman", pch = 16, type = "l", col = "skyblue3")
+
+#points(OS$Date[which.min(OS$Predicted.Level)], OS$Predicted.Level[which.min(OS$Predicted.Level)], pch = "x", col = "red")
+
+plot(R$Date, R$Predicted.Level, xlab = "Date", ylab = "Predicted Level", main =
+    "scatter plot of date to Predicted Level for Rainbow", pch = 16, type = "l", col = "lightcyan4")
+
+plot(beach3$Date, beach3$Predicted.Level, xlab = "Date", ylab = "Predicted Level", main = "scatter plot of Date to Predicted Level for beach3", pch = 16, type = "l", col = "black")
+
+beach_yes$Beach.Name[which.min(beach_yes$Predicted.Level)]
+beach_yes$Beach.Name[which.max(beach_yes$Predicted.Level)]
+
+beach_no$Beach.Name[which.max(beach_no$Predicted.Level)]
+beach_no$Beach.Name[which.max(beach_no$Predicted.Level)]
+
+beach3$Swim.Advisory = as.numeric(beach3$Swim.Advisory)
+
+plot(beach3$Swim.Advisory, beach3$Predicted.Level, xlab = "Swim Advisory", ylab = "Predicted Level")
+```
+
+```{r}
+
+beach_yes = beach3 %>% filter(beach3$Swim.Advisory== "2")
+
+beach_no = beach3 %>% filter(beach3$Swim.Advisory == "1")
+
+nrow(beach_yes)
+nrow(beach_no)
+
+```
+
+```{r}
+set.seed(27) 
+par(mfrow = c(1,2))
+barplot(beach_yes$Predicted.Level, names.arg = beach_yes$Swim.Advisory, ylab= "Pridicted Level", xlab = "Swim Advisory", col = "slategray2")
+
+#barplot(beach_no$Predicted.Level, names.arg = beach_no$Swim.Advisory, ylab= "PL", xlab = "SW", col = "green")
+
+sample_no <- beach_no[sample(nrow(beach_no), nrow(beach_yes), replace = FALSE),]
+
+barplot(sample_no$Predicted.Level, names.arg = sample_no$Swim.Advisory, ylab= "Pridicted Level", xlab = "Swim Advisory", col = "plum1")
+```
+
+WRITE AB IT:
+
+the data above for each individualized beach tells me that half of the beaches surveyed in 2016 had a rise in E.Coli levels through out that summer, one beach had lower levels through out the summer and the rest either stay roughly the same and/ or stagnate between dangerously high levels and normal low levels. 
+
+
+**What dates created the highest and lowest recording of E. Coli in the given beaches?**
+
+make sure everything is a "hunch" no definitive answers.
+

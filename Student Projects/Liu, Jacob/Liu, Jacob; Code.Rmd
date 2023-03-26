@@ -1,0 +1,115 @@
+---
+title: "Final Project"
+author: "Jacob Liu"
+date: '2022-07-05'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Final Project
+
+This is the code and data analysis for my final project.
+
+Here's my setup code.
+
+```{r}
+food <- read.csv("~/Desktop/Project/food-inspections.csv", stringsAsFactors=TRUE)
+library(tidyverse)
+food = food %>% filter(City == "CHICAGO", Facility.Type == "Restaurant")
+```
+
+I'm first going to look at the distribution of restaurants reviewed based on the zip codes provided by the data set. I will take an SRS to get a more condensed summary. The more data entries I put in, the less specific the diagram is. I had to settle for 1000 to get the more specific representation. I weeded out the outlying zip codes that were above 60700, since there were much fewer data entries for those areas. Altogether there are 995 entries.
+
+```{r}
+set.seed(177013)
+SRS = food[sample(nrow(food), size = 1000, replace = FALSE),]
+SRS = SRS %>% filter(Zip < 60700)
+table(SRS$Zip)
+hist(SRS$Zip, ylab = "Frequency", xlab = "Zip Code", 
+     main = "Histogram of Distribution of Sampled Zip Codes in the Data")
+```
+A lot of these data entries came from the 60607 and 60613 area which is in Near West Side and Lake View. Near West Side is a relatively good neighborhood in terms of annual income. The median annual income in that area is around 90k. In Lake view, the median annual income is also around 90k, but slightly higher than that of Near West Side.
+
+https://urldefense.com/v3/__https://www.chicago.gov/content/dam/city/sites/covid/reports/2020-04-24/ChicagoCommunityAreaandZipcodeMap.pdf__;!!DZ3fjg!5SeDJI4NL69TNgWncSzjAw51uW8Uzqh3otmyvBWNapEroHmYz_Oe0EacU1U0GvBHzBaE2gblKfWxiDgiNx2oF6x7$ 
+
+https://urldefense.com/v3/__https://www.cmap.illinois.gov/documents/10180/126764/Near*West*Side.pdf__;Kys!!DZ3fjg!5SeDJI4NL69TNgWncSzjAw51uW8Uzqh3otmyvBWNapEroHmYz_Oe0EacU1U0GvBHzBaE2gblKfWxiDgiN573idi6$ 
+https://urldefense.com/v3/__https://www.cmap.illinois.gov/documents/10180/126764/Lake*View.pdf__;Kw!!DZ3fjg!5SeDJI4NL69TNgWncSzjAw51uW8Uzqh3otmyvBWNapEroHmYz_Oe0EacU1U0GvBHzBaE2gblKfWxiDgiNzO76vLE$ 
+
+Next I will be looking at which areas had the most failures in their restaurant inspections and compare them to the distribution of sample frequency.
+
+``` {r}
+par(mfrow = c(1, 2))
+failed = SRS %>% filter(Results == "Fail")
+table(failed$Zip)
+hist(failed$Zip, ylab = "Frequency", xlab = "Failed Restaurant Zip Codes", main = "Histogram of Failed Restaurants")
+hist(SRS$Zip, ylab = "Frequency", xlab = "Zip Code", main = "Histogram of Distribution of Zip Codes")
+```
+Zip code 60614 had the most fails: 11. Closely behind it was 60608 which had 10 fails. These are the Lincoln Park and Lower West Side areas. Compared to the distribution of areas where the most data was taken from, high numbers of fails coincided with the high numbers of samples such as zip code areas: 60613 - 14. This can be misleading as even though there are more failures, that is due to the fact that there are more samples in that specific area.
+
+So I will be grabbing an (approximately) equal amount of restaurants from each area and comparing how many restaurants fail inspections when the number of sampled restaurants is uniform.
+```{r}
+Area1 = food %>% filter(Zip >= 60600, Zip < 60610)
+Area2 = food %>% filter(Zip >= 60610, Zip < 60620)
+Area3 = food %>% filter(Zip >= 60620, Zip < 60630)
+Area4 = food %>% filter(Zip >= 60630, Zip < 60640)
+Area5 = food %>% filter(Zip >= 60640, Zip < 60650)
+Area6 = food %>% filter(Zip >= 60650, Zip < 60660)
+Area7 = food %>% filter(Zip >= 60660, Zip < 60670)
+
+sample1 = Area1[sample(nrow(Area1), size = 143, replace = FALSE),]
+sample2 = Area2[sample(nrow(Area2), size = 143, replace = FALSE),]
+sample3 = Area3[sample(nrow(Area3), size = 142, replace = FALSE),]
+sample4 = Area4[sample(nrow(Area4), size = 143, replace = FALSE),]
+sample5 = Area5[sample(nrow(Area5), size = 143, replace = FALSE),]
+sample6 = Area6[sample(nrow(Area6), size = 142, replace = FALSE),]
+sample7 = Area7[sample(nrow(Area7), size = 143, replace = FALSE),]
+
+failed1 = sample1 %>% filter(Results == "Fail")
+failed2 = sample2 %>% filter(Results == "Fail")
+failed3 = sample3 %>% filter(Results == "Fail")
+failed4 = sample4 %>% filter(Results == "Fail")
+failed5 = sample5 %>% filter(Results == "Fail")
+failed6 = sample6 %>% filter(Results == "Fail")
+failed7 = sample7 %>% filter(Results == "Fail")
+
+length(failed1$Zip)
+length(failed2$Zip)
+length(failed3$Zip)
+length(failed4$Zip)
+length(failed5$Zip)
+length(failed6$Zip)
+length(failed7$Zip)
+```
+13 from 60600 - 60610, 27 from 60610 - 60620, 36 from 60620 - 60630, 22 from 60630 - 60640, 33 from 60640 - 60650, 18 from 60650 - 60660, and 28 from 60660 - 60670. These are the number of fails from the samples from the Zip ranges. Next I will look at the rate of failure in a percentage compared to the restaurants that pass in each sample.
+
+```{r}
+length(failed1$Zip) / length(sample1$Zip)
+length(failed2$Zip) / length(sample2$Zip)
+length(failed3$Zip) / length(sample3$Zip)
+length(failed4$Zip) / length(sample4$Zip)
+length(failed5$Zip) / length(sample5$Zip)
+length(failed6$Zip) / length(sample6$Zip)
+length(failed7$Zip) / length(sample7$Zip)
+```
+"Area1" or Zip areas from 60600 to 60610 had the lowest percentage of fails of approximately 12.6% failure. "Area3", 60620 to 60630 had the highest percentage of fails at approximately 22.5%. Most of these zips are in the North half of Chicago.
+
+Now I'm going to calculate the overall number of failed restaurants in the sample, the average number of fails per region, and overall average percentage of failure in every region.
+
+``` {r}
+sampleStr = bind_rows(sample1, sample2, sample3, sample4, sample5, sample6, sample7)
+failedStr = bind_rows(failed1, failed2, failed3, failed4, failed5, failed6, failed7)
+length(failedStr$Zip)
+length(failedStr$Zip) / 7
+length(failedStr$Zip) / length(sampleStr$Zip)
+```
+
+So around 19% of restaurants fail their food inspections around in Chicago based on my sample. Compared to using the entire data set...
+```{r}
+fail = food %>% filter(Results == "Fail")
+length(fail$Zip)
+length(fail$Zip) / length(food$Zip)
+```
+I got a higher percent failure of 18.6%.

@@ -1,0 +1,151 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+Crime<- read.csv("~/Downloads/Crimes_-_2019.csv", stringsAsFactors=TRUE)
+library(tidyverse)
+```
+
+```{r}
+subset = Crime %>% select(-c("Location","Longitude","Latitude","X.Coordinate","Y.Coordinate","ID","Case.Number","Beat","Updated.On","FBI.Code","IUCR","Date","Case.Number","Year","Block","Description","Arrest","Domestic","District"))
+```
+
+```{r}
+summary(subset$Primary.Type,2)
+```
+```{r}
+Theft=subset %>% filter(Primary.Type=="THEFT")
+summary(Theft$Location.Description,2)
+
+Battery=subset %>% filter(Primary.Type=="BATTERY")
+summary(Battery$Location.Description,2)
+
+CriminalDamage=subset %>% filter(Primary.Type=="CRIMINAL DAMAGE")
+summary(CriminalDamage$Location.Description,2)
+
+Assault=subset %>% filter(Primary.Type=="ASSAULT")
+summary(Assault$Location.Description,2)
+
+DeceptivePractice=subset %>% filter(Primary.Type=="DECEPTIVE PRACTICE")
+summary(DeceptivePractice$Location.Description,2)
+```
+
+```{r}
+Theftp=nrow(subset %>% filter(Primary.Type=="THEFT"))
+Batteryp=nrow(subset %>% filter(Primary.Type=="BATTERY"))
+CriminalDamagep=nrow(subset %>% filter(Primary.Type=="CRIMINAL DAMAGE"))
+Assaultp=nrow(subset %>% filter(Primary.Type=="ASSAULT"))
+Deceptivepracticep=nrow(subset %>% filter(Primary.Type=="DECEPTIVE PRACTICE"))
+
+Theftpp=(Theftp/nrow(Crime))*100
+Batterypp=(Batteryp/nrow(Crime))*100
+CriminalDamagepp=(CriminalDamagep/nrow(Crime))*100
+Assaultpp=(Assaultp/nrow(Crime))*100
+Deceptivepracticepp=(Deceptivepracticep/nrow(Crime))*100
+
+options(scipen=100)
+Crime.Type <- c("Theft","Battery","Criminal Damage","Assault","Deceptive Practice")
+Amount <- c(Theftp,Batteryp,CriminalDamagep,Assaultp,Deceptivepracticep)
+PercentageOfAllCrimeCommitted <- c(Theftpp,Batterypp,CriminalDamagepp,Assaultpp,Deceptivepracticepp)
+MostCommonLocation<- c("Street","Apartment","Street","Residence","Residence")
+AmountOfCrimeinLocation <- c(13348,12131,8738,3595,5721)
+
+df <- data.frame(Crime.Type, Amount,PercentageOfAllCrimeCommitted,MostCommonLocation,AmountOfCrimeinLocation)
+df
+
+```
+
+```{r}
+hist(subset$Ward, xlab="Ward", main="Amount of Crime in each Ward in 2019", breaks=180, col="rainbow"(100)) 
+hist(subset$Community.Area,xlab="Community Area",main="Amount of Crime in Each Community Area", breaks=280,col="rainbow"(100))
+```
+
+
+```{r}
+ward42 = subset %>% filter(Ward=="42")
+summary(ward42$Primary.Type,2)
+summary(ward42$Location.Description,2)
+print(8604/nrow(ward42)*100)
+```
+```{r}
+ward28 = subset %>% filter(Ward=="28")
+summary(ward28$Primary.Type,2)
+summary(ward28$Location.Description,2)
+print(2736/nrow(ward28)*100)
+```
+```{r}
+ward27 = subset %>% filter(Ward=="27")
+summary(ward27$Primary.Type,2)
+summary(ward27$Location.Description,2)
+print(3622/nrow(ward27)*100)
+```
+```{r}
+ward24 = subset %>% filter(Ward=="24")
+summary(ward24$Primary.Type,2)
+summary(ward24$Location.Description,2)
+print(2447/nrow(ward24)*100)
+```
+```{r}
+ward6 = subset %>% filter(Ward=="6")
+summary(ward6$Primary.Type,2)
+summary(ward6$Location.Description,2)
+print(2373/nrow(ward6)*100)
+```
+
+```{r}
+Ward <- c(42,28,27,24,6)
+MostCommonCrime <- c("Theft","Battery","Theft","Narcotics","Battery")
+AmountOfCrime <- c(8604,2736,3622,2447,2373)
+PercentageOfCrime <- c(51.63,21.04,28.98,32.25,24.29)
+CommonLocation <- c("Resteraunt","Street","Street","Street","Street")
+AmountinLocation <- c(2427,2736,3257,2809,2486)
+qa <- data.frame(Ward, MostCommonCrime, AmountOfCrime, PercentageOfCrime, CommonLocation, AmountinLocation)
+qa
+```
+```{r}
+Community25 = subset %>% filter(Community.Area==25)
+summary(Community25$Primary.Type,2)
+summary(Community25$Location.Description,2)
+print(3412/nrow(Community25)*100)
+```
+```{r}
+Community8 = subset %>% filter(Community.Area==8)
+summary(Community8$Primary.Type,2)
+summary(Community8$Location.Description,2)
+print(5723/nrow(Community8)*100)
+```
+```{r}
+Community32 = subset %>% filter(Community.Area==32)
+summary(Community32$Primary.Type,2)
+summary(Community32$Location.Description,2)
+print(5596/nrow(Community32)*100)
+```
+```{r}
+Community28 = subset %>% filter(Community.Area==28)
+summary(Community28$Primary.Type,2)
+summary(Community28$Location.Description,2)
+print(3472/nrow(Community28)*100)
+```
+```{r}
+Community29 = subset %>% filter(Community.Area==29)
+summary(Community29$Primary.Type,2)
+summary(Community29$Location.Description,2)
+print(2176/nrow(Community29)*100)
+```
+
+```{r}
+CommunityArea <- c(25,8,32,28,29)
+CommonCrime <- c("Battery","Theft","Theft","Theft","Narcotics")
+Amount <- c(3480,5723,5596,3472,2176)
+Percent <- c(23.10,45.45,52.79,37.07,24.15)
+Location <- c("Street","Street","Resteraunt","Street","Street")
+LocationAmount <- c(3412,1498,1442,2155,2103)
+qa <- data.frame(CommunityArea, CommonCrime, Amount, Percent, Location, LocationAmount)
+qa
+```
+
+
+

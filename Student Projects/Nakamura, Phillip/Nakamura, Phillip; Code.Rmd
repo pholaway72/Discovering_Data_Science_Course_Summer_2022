@@ -1,0 +1,267 @@
+---
+title: "Final Project"
+author: "Phillip Nakamura"
+date: '2022-06-21'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r test}
+NA + 1
+```
+
+```{r setup}
+library(tidyverse)
+library(ggplot2)
+baseWeather <- read.csv("~/Downloads/Digital Scholars/Final Project/USW00014819.csv", stringsAsFactors=TRUE)
+```
+
+```{r cleaning}
+baseWeather$HLY.PRES.NORMAL[baseWeather$HLY.PRES.NORMAL == -9999] <- NA
+baseWeather$HLY.PRES.10PCTL[baseWeather$HLY.PRES.10PCTL == -9999] <- NA
+baseWeather$HLY.PRES.90PCTL[baseWeather$HLY.PRES.90PCTL == -9999] <- NA
+
+baseWeather$HLY.CLOD.PCTBKN[baseWeather$HLY.CLOD.PCTBKN == -9999] <- NA
+baseWeather$HLY.CLOD.PCTFEW[baseWeather$HLY.CLOD.PCTFEW == -9999] <- NA
+baseWeather$HLY.CLOD.PCTSCT[baseWeather$HLY.CLOD.PCTSCT == -9999] <- NA
+baseWeather$HLY.CLOD.PCTCLR[baseWeather$HLY.CLOD.PCTCLR == -9999] <- NA
+baseWeather$HLY.CLOD.PCTOVC[baseWeather$HLY.CLOD.PCTOVC == -9999] <- NA
+
+Weather = baseWeather  %>% select (-c("STATION","NAME","LATITUDE","LONGITUDE","ELEVATION","DATE"))
+Weather = Weather %>% select(-c(contains(c("flag","year"))))
+
+Jan = Weather %>% filter(month == 1)
+Feb = Weather %>% filter(month == 2)
+Mar = Weather %>% filter(month == 3)
+Apr = Weather %>% filter(month == 4)
+May = Weather %>% filter(month == 5)
+Jun = Weather %>% filter(month == 6)
+Jul = Weather %>% filter(month == 7)
+Aug = Weather %>% filter(month == 8)
+Sep = Weather %>% filter(month == 9)
+Oct = Weather %>% filter(month == 10)
+Nov = Weather %>% filter(month == 11)
+Dec = Weather %>% filter(month == 12)
+
+Winter1 = rbind(Jan,Feb)
+Spring = rbind(Mar,Apr,May)
+Summer = rbind(Jun,Jul,Aug)
+Fall = rbind(Sep,Oct,Nov)
+Winter2 = rbind(Winter1,Dec)
+```
+
+```{r mutations}
+Weather = Weather %>% mutate(HLY.CLOD.TOTPCT = ((Weather$HLY.CLOD.PCTFEW * 1.5) + (Weather$HLY.CLOD.PCTSCT * 3.5) + (Weather$HLY.CLOD.PCTBKN * 5.5) + (Weather$HLY.CLOD.PCTOVC * 8)) / 100)
+Weather = Weather %>% mutate(HLY.TEMP.RANGE = Weather$HLY.TEMP.90PCTL - Weather$HLY.TEMP.10PCTL)  
+
+for (i in 1:8760){
+  Weather[i,"HLY.WIND.1STDIR"] = (if (Weather[i,"HLY.WIND.1STDIR"] == 1){
+                                      "N"
+                                    }else if (Weather[i,"HLY.WIND.1STDIR"] == 2){
+                                      "NE"
+                                    }else if (Weather[i,"HLY.WIND.1STDIR"] == 3){
+                                      "E"
+                                    }else if (Weather[i,"HLY.WIND.1STDIR"] == 4){
+                                      "SE"
+                                    }else if (Weather[i,"HLY.WIND.1STDIR"] == 5){
+                                      "S"
+                                    }else if (Weather[i,"HLY.WIND.1STDIR"] == 6){
+                                      "SW"
+                                    }else if (Weather[i,"HLY.WIND.1STDIR"] == 7){
+                                      "W"
+                                    }else if (Weather[i,"HLY.WIND.1STDIR"] == 8){
+                                      "NW"
+                                    })
+  Weather[i,"HLY.WIND.2NDDIR"] = (if (Weather[i,"HLY.WIND.2NDDIR"] == 1){
+                                      "N"
+                                    }else if (Weather[i,"HLY.WIND.2NDDIR"] == 2){
+                                      "NE"
+                                    }else if (Weather[i,"HLY.WIND.2NDDIR"] == 3){
+                                      "E"
+                                    }else if (Weather[i,"HLY.WIND.2NDDIR"] == 4){
+                                      "SE"
+                                    }else if (Weather[i,"HLY.WIND.2NDDIR"] == 5){
+                                      "S"
+                                    }else if (Weather[i,"HLY.WIND.2NDDIR"] == 6){
+                                      "SW"
+                                    }else if (Weather[i,"HLY.WIND.2NDDIR"] == 7){
+                                      "W"
+                                    }else if (Weather[i,"HLY.WIND.2NDDIR"] == 8){
+                                      "NW"
+                                    })
+}
+```
+
+
+```{r times}
+boxplot(Weather$HLY.WIND.AVGSPD ~ Weather$month, xlab="Month", ylab="Wind Speed (MPH)", main= "Wind Speed by Month")
+boxplot(Weather$HLY.WIND.AVGSPD ~ Weather$hour, xlab="Hour", ylab="Wind Speed (MPH)", main= "Wind Speed by Time of Day")
+
+boxplot(Winter2$HLY.WIND.AVGSPD ~ Winter2$hour, xlab="Hour", ylab="Wind Speed (MPH)", main= "Wind Speed by Time of Day (Winter)")
+boxplot(Spring$HLY.WIND.AVGSPD ~ Spring$hour, xlab="Hour", ylab="Wind Speed (MPH)", main= "Wind Speed by Time of Day (Spring)")
+boxplot(Summer$HLY.WIND.AVGSPD ~ Summer$hour, xlab="Hour", ylab="Wind Speed (MPH)", main= "Wind Speed by Time of Day (Summer)")
+boxplot(Fall$HLY.WIND.AVGSPD ~ Fall$hour, xlab="Hour", ylab="Wind Speed (MPH)", main= "Wind Speed by Time of Day (Fall)")
+```
+```{r direction}
+ggplot(Weather,aes(x=factor(HLY.WIND.1STDIR, level = c("N","NE","E","SE","S","SW","W","NW")))) +
+  coord_polar(start = -pi/8) + 
+  scale_x_discrete(drop = F)+
+  geom_bar(width = 0.99, col="black")+
+  xlab("") + ylab("") + ggtitle("# of Occurances by Primary Wind Direction") +
+  theme_minimal()
+
+ggplot(Weather,aes(x=factor(HLY.WIND.1STDIR, level = c("N","NE","E","SE","S","SW","W","NW")),y=HLY.WIND.AVGSPD)) +
+  geom_boxplot(width = 0.2)+
+  xlab("Primary Wind Direction") + ylab("Wind Speed (MPH)") + ggtitle("Wind Speed by Primary Wind Direction") +
+  theme_light()
+
+```
+
+```{r clouds}
+ggplot(Weather,aes(x=HLY.CLOD.TOTPCT,y=HLY.WIND.AVGSPD)) + 
+  geom_point(alpha = 0.3) + 
+  xlab("Cloud cover (Okta)") + ylab("Wind Speed (MPH)") + ggtitle("Wind Speed by Cloud Cover") + 
+  geom_smooth(method = "lm") +
+  annotate(geom="text", x=3.29, y=14.3, label="Y = 2.35 • X + 0.864  R^2 = 0.6679 ")+
+  theme_light()
+
+model = lm(HLY.WIND.AVGSPD ~ HLY.CLOD.TOTPCT, data = Weather)
+summary(model)
+```
+
+```{r temp}
+ggplot(Weather,aes(x=HLY.TEMP.NORMAL,y=HLY.WIND.AVGSPD)) + 
+  geom_point(alpha = 0.3) + 
+  xlab("Temperature Normals (°F)") + ylab("Wind Speed (MPH)") + ggtitle("Wind Speed by Temperature")+
+  theme_light() 
+
+model=lm(HLY.WIND.AVGSPD ~ HLY.TEMP.RANGE, data = Weather)
+summary(model)
+
+ggplot(Weather,aes(x=HLY.TEMP.RANGE,y=HLY.WIND.AVGSPD)) + 
+  geom_point(alpha = 0.3) + 
+  xlab("Hourly Temperature Range (°F)") + ylab("Wind Speed (MPH)") + ggtitle("Wind Speed by Temperature Range") + 
+  geom_smooth(method = "lm") +
+  annotate(geom="text", x=16, y=14.3, label="Y = 0.252 • X + 3.836  R^2 = 0.4644 ")+
+  theme_light()
+
+boxplot(Weather$HLY.TEMP.RANGE ~ Weather$month, xlab="Month", ylab="Hourly Temperature Range (°F)", main= "Temperature Range by Month")
+
+boxplot(Weather$HLY.TEMP.RANGE ~ Weather$hour, xlab="Hour", ylab="Hourly Temperature Range (°F)", main= "Temperature Range by Time of Day")
+
+ggplot(Weather,aes(x=HLY.TEMP.NORMAL,y=HLY.TEMP.RANGE)) + 
+  geom_point(alpha = 0.3) + 
+  xlab("Temperature") + ylab("Hourly Temperature Range (°F)") + ggtitle("Temperature Range by Temperature") + 
+  geom_smooth(method = "lm") +
+  theme_light()
+
+```
+```{R Humidity}
+ggplot(Weather,aes(x=HLY.DEWP.NORMAL,y=HLY.WIND.AVGSPD)) + 
+  geom_point(alpha = 0.3) + 
+  xlab("Dew Point") + ylab("Wind Speed (MPH)") + ggtitle("Wind Speed by Dew Point") +
+  theme_light()
+
+boxplot(Weather$HLY.DEWP.NORMAL ~ Weather$month, xlab="Month", ylab="Dew Point", main= "Humidity by Month")
+
+
+
+ggplot(Weather,aes(x=HLY.TEMP.NORMAL,y=HLY.DEWP.NORMAL)) + 
+  geom_point(alpha = 0.3) + 
+  xlab("Temperature (°F)") + ylab("Dew Point") + ggtitle("Temperature VS Dew Point") + 
+  geom_smooth(method = "lm")+
+  theme_light() 
+
+model = lm(HLY.DEWP.NORMAL ~ HLY.TEMP.NORMAL, data = Weather)
+plot(model$residuals, Weather$HLY.DEWP.NORMA)
+```
+
+```{R Cross-Check}
+Ordered = Weather[order(Weather$HLY.WIND.AVGSPD),]
+B10 = head(Ordered,876)
+T10 = tail(Ordered,876)
+
+B10
+T10
+
+clodtemp = Weather %>% filter(!(is.na(HLY.CLOD.TOTPCT)))
+clodmean = mean(clodtemp$HLY.CLOD.TOTPCT)
+rangemean = mean(Weather$HLY.TEMP.RANGE)
+
+clodmean
+rangemean
+
+```
+
+```{R Bottom10}
+ggplot(B10,aes(x=month)) +
+  geom_bar(width = 0.3, col="black") +
+  scale_x_binned(n.breaks = 12, limits = c(1,12))  +
+  xlab("Month") + ylab("") + ggtitle("Histogram of Months in Bottom 10%") +
+  theme_minimal()
+
+ggplot(B10,aes(x=hour)) +
+  geom_bar(width = 0.3, col="black") +
+  scale_x_binned(n.breaks = 24, limits = c(1,24))  +
+  xlab("Hour") + ylab("") + ggtitle("Histogram of Times of day in Bottom 10%") +
+  theme_minimal()
+
+clodtemp = B10 %>% filter(!(is.na(HLY.CLOD.TOTPCT)))
+mean(clodtemp$HLY.CLOD.TOTPCT)
+
+xbar = mean(clodtemp$HLY.CLOD.TOTPCT)
+n = nrow(clodtemp)
+s = sd(clodtemp$HLY.CLOD.TOTPCT)
+df = n-1
+tts = (xbar - clodmean)/(s/sqrt(n))
+tts
+pt(tts, df, lower.tail = T)
+
+xbar = mean(B10$HLY.TEMP.RANGE)
+n = nrow(B10)
+s = sd(B10$HLY.TEMP.RANGE)
+df = n-1
+tts = (xbar - rangemean)/(s/sqrt(n))
+tts
+pt(tts, df, lower.tail = T)
+```
+
+```{R Top10}
+ggplot(T10,aes(x=month)) +
+  geom_bar(width = 0.3, col="black") +
+  scale_x_binned(n.breaks = 12, limits = c(1,12))  +
+  xlab("Month") + ylab("") + ggtitle("Histogram of Months in Top 10%") +
+  theme_minimal()
+
+ggplot(T10,aes(x=hour)) +
+  geom_bar(width = 0.3, col="black") +
+  scale_x_binned(n.breaks = 24, limits = c(1,24))  +
+  xlab("Hour") + ylab("") + ggtitle("Histogram of Times of day in Top 10%") +
+  theme_minimal()
+
+clodtemp = T10 %>% filter(!(is.na(HLY.CLOD.TOTPCT)))
+xbar = mean(clodtemp$HLY.CLOD.TOTPCT)
+n = nrow(clodtemp)
+s = sd(clodtemp$HLY.CLOD.TOTPCT)
+df = n-1
+tts = (xbar - clodmean)/(s/sqrt(n))
+tts
+pt(tts, df, lower.tail = F)
+
+xbar = mean(T10$HLY.TEMP.RANGE)
+n = nrow(T10)
+s = sd(T10$HLY.TEMP.RANGE)
+df = n-1
+tts = (xbar - rangemean)/(s/sqrt(n))
+tts
+pt(tts, df, lower.tail = F)
+```
+
+
+
+
+

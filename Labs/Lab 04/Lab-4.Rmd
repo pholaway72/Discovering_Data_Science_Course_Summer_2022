@@ -1,0 +1,127 @@
+---
+title: "Lab Finding Data"
+author: "Abhi Thanvi, Paul Holaway"
+date: "June 27th, 2022"
+output: pdf_document
+toc: True
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+\newpage
+
+# Lab Finding Data
+
+## Welcome
+
+Just like learning a new spoken language, you will not learn the language without practice. Labs are an important part of this course. Collaboration on labs is **extremely encouraged**. If you find yourself stuck for more than a few minutes, ask a neighbor or course staff for help. When you are giving help to your neighbor, explain the **idea and approach** to the problem without sharing the answer itself so they can figure it out on their own. This will be better for them and for you. For them because it will stick more and they will have a better understanding of the concept. For you because if you can explain it to other students, that means you understand it better too.
+
+## The Idea of this Lab
+
+The idea behind this lab is to allow us to think about the differences and similarities between Experimental Design and Observational Study, and there importance in the field of Data Science. Data Science without data is incomplete, but fetching data from poor techniques is dangerous. Therefore, this lab is designed to explore the concepts of Experimental Design and Observational Studies. In addition, this lab will ask you to implement sampling methods in R. This is one of the more important statistical foundation labs we do as the topic covered today is a small but significant slice about data collection methods. In other words, this lab discusses the collection methods of the clay we will be making bricks out of. 
+
+  **"Collecting no data might be bad, but collecting data with poor techniques is a nightmare." - Woke Abhi**
+
+## Problem 1: The Dr. Sheldon Cooper Test
+
+Hi! My name is Dr. Sheldon Cooper and I am a theoretical physicist specializing in Quantum Physics. I will be testing you today as part of me returning a favor to Abhi. He made me a warm beverage when I was sick. Don't worry, I am more than qualified for testing you. I'm exceedingly smart. I graduated college at 14. 
+
+Anyways, this test will be about movies. [Bazinga!](https://youtu.be/qH1VOy7HKRs?t=73) You really thought you would get away with movies as being your test topic. 
+
+I am gonna ask 4 questions regarding what you learned today, and I want you to mingle among your group to figure out the answers to these questions. 
+
+**Question 1:** What is the conceptual difference between Experimental Design vs. Observational Studies? Your answer should have specific difference, but the overall difference in the concept of Experimental vs. Observational. Think big picture idea.
+
+**Answer:** (Student Response Here) The key difference is the control. In experimental design we have control and we see what happens, in observational we do not have control and we just observe what happens. 
+
+
+**Question 2:** A fertilizer company, Farmers Helpers Inc., is wanting to answer the question "Does our new product kill more weeds in farmlands?". They are running low on time and want to answer this question as soon as possible for the stakeholders. Luckily, Farmers Helpers Inc. has some data collected and stored on their databases. One of the lead analyst decides to use the data to answer the question. Would this be an experimental design or observational study?
+
+**Answer:** (Student Response Here) Observational Study.
+
+
+**Question 3:** Abhi is having a hard time convincing that his pickup line is the best pickup line for his non-existent dating life. To prove it to his friends, he is thinking of walking on the street from 6pm - 8pm near the Irish Pub and randomly using his pickup line on 25 girls. He will repeat this for 7 days, and tally up the positive responses. He will then do the same process but with a common pickup line he found on Google. At the end, he will compare the positive responses for his pickup line and Google's pickup line. Would this be considered an observational study because Abhi is observing the reactions? Or would this be an experimental design? Justify your response. 
+
+*Hint: DO NOT ASK ABHI FOR THE PICKUP LINE, IT WILL RUIN HIS EXPERIMENT ;)*
+
+**Answer:** (Student Response Here) Experimental Design since Abhi is testing his pickup line to a control group of Google pickup line. Answers can vary, but should be Experimental design with valid justification.
+
+**Question 4:** Well, as a theoretical physicist, I will be performing an experiment and I am unsure if I want to use blocking at the moment. I usually do not ask anyone for help unless they have a PhD or is me from the future, but to return my favors to my friend...I will pretend I need your help. Can you tell me the reason why we use blocking in designing an experiment?
+
+**Answer:** (Student Response here) Answer may vary, but should be along the lines of...Blocking creates homogeneous groups and reduces the effects of "unwanted" variables. The response could also talk about how it increases control of the variables in the experiment. 
+
+\newpage
+
+## Problem 2
+
+### Part 1: The Olivia Strategy
+
+**Question 1:** Let us import the Data.csv over here, so we can get ready to answer further questions. Make sure to important any necessary libraries too!
+
+**Answer:** 
+```{r}
+#Import Library
+library (tidyverse)
+```
+
+```{r}
+#Read the CSV into a data frame
+df <- read.csv("~/Classes/DPISu22/Data Sets/Data.csv", stringsAsFactors=TRUE)
+```
+
+**Question 2:** Taylor's coworker, Olivia, who is known for taking short cuts, says she knows how to split the participants into two groups: take the first 11 people from the list and put them into the control group, then put the rest of them in the treatment group. Using Olivia's strategy assign the treatment and control groups. 
+
+**Answer:** 
+```{r}
+# Assign Control Group
+control = df %>% head(11)
+control
+```
+
+```{r}
+#Assign Treatment Group
+treatment = df %>% tail(11)
+treatment
+```
+
+### Part 2: Taylor is Always Right
+
+**Question 1:** Taylor believes that Olivia's method for assignment has problems. What is the possible issue with Olivia's strategy?
+
+**Answer:** (Student Response Here) Olivia's method is not random and can create skewed data. She also might be creating bias in her way.  
+
+**Question 2:** Taylor thinks she might have a better way than Olivia. She believes she can randomly sample 11 people and add them in Control and other half in Treatment. Using Taylor's strategy, randomly sample 11 people and assign them into control. The code for the treatment is more complicated so we will provide that for you. (This may be something to use in your project.)  
+
+**Answer:** 
+```{r}
+# Seed Value - DO NOT CHANGE THIS
+set.seed(36241)
+# Seed Value - DO NOT CHANGE THIS
+taylor_control = df[sample(nrow(df), size = 11, replace = FALSE),]
+taylor_control
+```
+```{r}
+#Treatment Group Code
+taylor_treatment = df[!(df$Name %in% taylor_control$Name),]
+taylor_treatment
+```
+
+**Question 3:** With your group, discuss which method is better (Taylor or Olivia). Give a valid reasoning of why you think their method is better.
+
+**Answer:** (Student Response Here) They should say Taylor because her sampling method is SRS which decreases bias. If they choose Olivia, most likely their reasoning is something to do with ease of splitting. The correct/best answer should be Taylor.  
+
+**Question 4:** Taylor still thinks that she might have high variability in her method. She wants to know what could be the potential reason and why? Help Taylor by giving a potential and why there could be high variability.
+
+*Hint: How many rows are there in the data frame*
+
+**Answer:** (Student Response Here) There could be high variability or even bias because the sample size is quite small. Taking samples from small populations often leads to high variability and potentially even create bias.
+
+
+## Submission
+Once you have finished your lab...
+
+1. Go to the top left and click `File` and `Save`.
+2. Click on the `Knit` button to convert this file to a PDF.
+3. Submit **BOTH** the `.Rmd` file and `.pdf` file to Blackboard by 11:59 PM tonight.

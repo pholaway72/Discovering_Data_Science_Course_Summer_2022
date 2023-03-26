@@ -1,0 +1,44 @@
+---
+title: "project"
+author: "Aijah"
+date: '2022-06-28'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <https://urldefense.com/v3/__http://rmarkdown.rstudio.com__;!!DZ3fjg!8DDFX92IODs3pHNfSMbeFGua2G5BZPIijPzr93D75LDY_nVpuGywlCmx2eOQuWsAso6dnWEVet441bErm3zp$ >.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+library(tidyverse)
+air_pollution <- read.csv("~/Downloads/chicago_air_pollution.csv", stringsAsFactors=TRUE)
+summary(air_pollution)
+air_sub1 = air_pollution %>% na.omit()
+air_sub1 = air_sub1 %>% rename('dewpoint'='dptp', 'pm10'= 'pm10tmean2','o3'='o3tmean2')
+summary(air_sub1)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+max(air_sub1$o3)
+max(air_sub1$pm10)
+max(air_sub1$tmpd)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+par(mfrow = c(3,1))
+hist(air_sub1$o3, col="blue",xlab = "Dobson Units",main = "Ozone(o3tmean)")
+hist(air_sub1$pm10,col= "cyan",xlab = "Micrometers",main = " Fine Particulate Matter(pm10mean)")
+hist(air_sub1$tmpd, col = "purple",xlab = "Fahrenheit ",main = "Temperature Mean ")
+```
+

@@ -1,0 +1,171 @@
+---
+title: "Data Science Final Project"
+author: "Shreepaad Earanti"
+date: "July 5 2022"
+output: pdf_document
+---
+
+This is an [R Markdown](https://urldefense.com/v3/__http://rmarkdown.rstudio.com__;!!DZ3fjg!_VT4lxnD8g5bfnbwMxEtmmEp2u0iJaSa0Ou0eB_AlmYXPTxD8nXzMgg_nIogGE1EeyZpW16pyUBebPBt6i-vHoscLVxBmw$ ) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+#Importing Tidyverse and Dataset
+
+```{r}
+#Importing tidyverse and dataset
+library(tidyverse)
+Chicago_Energy_Benchmarking_._2019_Data_Reported_in_2020 <- read.csv("~/Desktop/project/Chicago_Energy_Benchmarking_-_2019_Data_Reported_in_2020.csv", stringsAsFactors=TRUE)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+```{r}
+#Filtering out columns
+subset_filtered = Chicago_Energy_Benchmarking_._2019_Data_Reported_in_2020 %>% filter(Electricity.Use..kBtu. != "NA" & ENERGY.STAR.Score != "NA")
+
+#Dataset with outliers
+subset_filtered_outliers = Chicago_Energy_Benchmarking_._2019_Data_Reported_in_2020 %>% filter(Electricity.Use..kBtu. != "NA" & ENERGY.STAR.Score != "NA" & Electricity.Use..kBtu. < 200000000)
+
+#Filtering out 
+subset_filtered = subset_filtered %>% select(-c(Data.Year, Exempt.From.Chicago.Energy.Rating, Water.Use..kGal., Natural.Gas.Use..kBtu., District.Steam.Use..kBtu., District.Chilled.Water.Use..kBtu., All.Other.Fuel.Use..kBtu., Total.GHG.Emissions..Metric.Tons.CO2e., GHG.Intensity..kg.CO2e.sq.ft., Reporting.Status, Latitude, Longitude, Location, Weather.Normalized.Site.EUI..kBtu.sq.ft., Weather.Normalized.Source.EUI..kBtu.sq.ft., ID, X..of.Buildings))
+subset_filtered <- subset_filtered %>%
+  rename(Property_Name = "Property.Name") %>%
+  rename(Zip_Code = "ZIP.Code") %>%
+  rename(City_Energy_Rating = "Chicago.Energy.Rating") %>%
+  rename(Community_Area = "Community.Area") %>%
+  rename(Property_Type = "Primary.Property.Type") %>% 
+  rename(Approx_Floor_Area_sqft = "Gross.Floor.Area...Buildings..sq.ft.") %>% 
+  rename(Year_Built = "Year.Built") %>%
+  rename(Energy_STAR_Score = "ENERGY.STAR.Score") %>%
+  rename(Electricity_kBtu = "Electricity.Use..kBtu.") %>%
+  rename(Site_EUI_kBtu_sqft = "Site.EUI..kBtu.sq.ft.") %>%
+  rename(Source_EUI_kBtu_sqft = "Source.EUI..kBtu.sq.ft.")
+
+#Filtering out for Dataset with outliers
+subset_filtered_outliers = subset_filtered_outliers %>% select(-c(Data.Year, Exempt.From.Chicago.Energy.Rating, Water.Use..kGal., Natural.Gas.Use..kBtu., District.Steam.Use..kBtu., District.Chilled.Water.Use..kBtu., All.Other.Fuel.Use..kBtu., Total.GHG.Emissions..Metric.Tons.CO2e., GHG.Intensity..kg.CO2e.sq.ft., Reporting.Status, Latitude, Longitude, Location, Weather.Normalized.Site.EUI..kBtu.sq.ft., Weather.Normalized.Source.EUI..kBtu.sq.ft., ID, X..of.Buildings))
+subset_filtered_outliers <- subset_filtered_outliers %>%
+  rename(Property_Name = "Property.Name") %>%
+  rename(Zip_Code = "ZIP.Code") %>%
+  rename(City_Energy_Rating = "Chicago.Energy.Rating") %>%
+  rename(Community_Area = "Community.Area") %>%
+  rename(Property_Type = "Primary.Property.Type") %>% 
+  rename(Approx_Floor_Area_sqft = "Gross.Floor.Area...Buildings..sq.ft.") %>% 
+  rename(Year_Built = "Year.Built") %>%
+  rename(Energy_STAR_Score = "ENERGY.STAR.Score") %>%
+  rename(Electricity_kBtu = "Electricity.Use..kBtu.") %>%
+  rename(Site_EUI_kBtu_sqft = "Site.EUI..kBtu.sq.ft.") %>%
+  rename(Source_EUI_kBtu_sqft = "Source.EUI..kBtu.sq.ft.")
+```
+
+
+```{r}
+#Making subsets based on Property Type
+Office = subset_filtered %>% filter(Property_Type == "Office")
+Hotel = subset_filtered %>% filter(Property_Type == "Hotel")
+Hostpital = subset_filtered %>% filter(Property_Type == "Hospital (General Medical & Surgical)")
+SeniorCare = subset_filtered %>% filter(Property_Type == "Senior Care Community")
+School = subset_filtered %>% filter(Property_Type == "K-12 School")
+MixedUse = subset_filtered %>% filter(Property_Type == "Mixed Use Property")
+Financial = subset_filtered %>% filter(Property_Type == "Financial Office")
+Multifamily = subset_filtered %>% filter(Property_Type == "Multifamily Housing")
+Supermarket = subset_filtered %>% filter(Property_Type == "Supermarket/Grocery Store")
+ResidenceHall = subset_filtered %>% filter(Property_Type == "Residence Hall/Dormitory")
+Retail = subset_filtered %>% filter(Property_Type == "Retail Store")
+Supercenter = subset_filtered %>% filter(Property_Type == "Wholesale Club/Supercenter")
+Medical = subset_filtered %>% filter(Property_Type == "Medical Office")
+Data = subset_filtered %>% filter(Property_Type == "Data Center")
+Bank = subset_filtered %>% filter(Property_Type == "Bank Branch")
+Worship = subset_filtered %>% filter(Property_Type == "Worship Facility")
+Court = subset_filtered %>% filter(Property_Type == "Courthouse")
+
+#Energy Average per Property Type
+Office_mean = mean(Office$Electricity_kBtu)
+Hotel_mean = mean(Hotel$Electricity_kBtu)
+Hospital_mean = mean(Hostpital$Electricity_kBtu)
+SeniorCare_mean = mean(SeniorCare$Electricity_kBtu)
+School_mean = mean(School$Electricity_kBtu)
+MixedUse_mean = mean(MixedUse$Electricity_kBtu)
+Financial_mean = mean(Financial$Electricity_kBtu)
+Multifamily_mean = mean(Multifamily$Electricity_kBtu)
+Supermarket_mean = mean(Supermarket$Electricity_kBtu)
+ResidenceHall_mean = mean(ResidenceHall$Electricity_kBtu)
+Retail_mean = mean(Retail$Electricity_kBtu)
+Supercenter_mean = mean(Supercenter$Electricity_kBtu)
+Medical_mean = mean(Medical$Electricity_kBtu)
+Data_mean = mean(Data$Electricity_kBtu)
+Bank_mean = mean(Bank$Electricity_kBtu)
+Worship_mean = mean(Worship$Electricity_kBtu)
+Court_mean = mean(Court$Electricity_kBtu)
+```
+
+#Correlation between Types of Properties and Energy Usage
+```{r}
+max.electricity <- c(Office_mean, Hotel_mean, Hospital_mean, SeniorCare_mean, School_mean, MixedUse_mean, Financial_mean, Multifamily_mean, Supermarket_mean, ResidenceHall_mean, Retail_mean, Supercenter_mean, Medical_mean, Data_mean, Bank_mean, Worship_mean, Court_mean)
+
+barplot(max.electricity,
+main = "Amount of Electricity in different Property Types (kBtu)",
+names.arg = c("Office", "Hotel", "Hosp. (GMS)", "SCC", "K-12 School", "MUP", "Finance", "Housing", "Sup. Market", "Dormitory", "Retail", "Supercenter", "Medical", "Data Center", "Bank Branch", "Worship Facility", "Courthouse"),
+col = "darkblue",
+xlab = "Property Types",
+ylab = "Average Energy Usage",
+cex.names = 0.48,
+cex.axis = 0.6,
+las = 2
+)
+
+```
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+```{r}
+energy = subset_filtered$Electricity_kBtu
+property_type = subset_filtered$Property_Type
+type_vs_energy = lm(energy ~ property_type, data = subset_filtered)
+plot(property_type, energy, main = "test")
+abline(type_vs_energy, col = "black")
+summary(type_vs_energy)
+```
+
+#Relationship between Energy Usage and Floor Area
+```{r}
+floor_area_outlier = subset_filtered_outliers$Approx_Floor_Area_sqft
+energy_outlier = subset_filtered_outliers$Electricity_kBtu
+floor_area = subset_filtered$Approx_Floor_Area_sqft
+energy = subset_filtered$Electricity_kBtu
+
+par(mfrow = c(1,2))
+
+size_vs_energy = lm(energy ~ floor_area, data = subset_filtered)
+plot(floor_area, energy, main = "Floor Area vs. Energy Usage", xlab = "Approximate Floor Area (sqft)", ylab = "Energy Usage (kBtu)", pch = 19, col = rainbow(3000), cex.main = 0.75)
+abline(size_vs_energy, col = "black")
+
+size_vs_energy_outlier = lm(energy_outlier ~ floor_area_outlier, data = subset_filtered_outliers)
+plot(floor_area_outlier, energy_outlier, main = "Floor Area vs. Energy Usage (w/o outliers)", xlab = "Approximate Floor Area (sqft)", ylab = "Energy Usage (kBtu)", pch = 19, col = rainbow(3000), cex.main = 0.75)
+abline(size_vs_energy_outlier, col = "black")
+
+```
+#WRITE HOW THIS DOESN'T WORK IN ANALYSIS, NEED TO FIX FOR FUTURE, X AND Y ARE DIFFERENT THATS WHY THE RESIDUAL STANDARD ERROR IS SO HIGH, MULTIPLE R SQUARED IS GOOD, 0.7236
+```{r}
+summary(size_vs_energy)
+```
+```{r}
+summary(size_vs_energy_outlier)
+```
+
+#Where Buildings fall in the Energy STAR Score scale
+```{r}
+hist(subset_filtered$Energy_STAR_Score, main = "Histogram of Energy STAR Score", xlab = "Score", ylab = "# of Buildings", col = "dark red")
+```
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+# NEED TO REMOVE THE OUTLIERS IF THERE IS A BIG DIFFERENCE
+
+#Relationship between Year Built and Energy Usage
+```{r}
+age = subset_filtered$Year_Built
+
+age_vs_energy = lm(age ~ energy, data = subset_filtered)
+
+summary(age_vs_energy)
+plot(age, energy, main = "Year Built vs. Energy Usage", xlab = "Year Built", ylab = "Energy Usage (kBtu)", pch = 19, col = "black")
+abline(age_vs_energy, col = "black")
+```
+

@@ -1,0 +1,219 @@
+---
+title: "project"
+author: "Edison Chiu"
+date: '2022-07-06'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+(Question?) What is the difference in salary for the different departments in government jobs?
+
+```{r}
+dataset <- read.csv("~/Desktop/Data Science/Current_Employee_Names__Salaries__and_Position_Titles_-_Full-time (1).csv", stringsAsFactors=TRUE)
+```
+
+Custom Functions
+```{r}
+jobPercentage = function(job, dept){
+  return (job / dept)
+}
+#need help on this function
+hourlyPay = function(hoursPerWeek, hourlyRate){
+  return (hoursPerWeek * hourlyRate * 52)
+}
+```
+
+Hourly wages
+```{r}
+hourly = dataset %>% filter(Salary.or.Hourly == "Hourly")
+numHourlyWorkers = nrow(hourly)
+numHourlyWorkers
+summary(hourly)
+
+#Motor Truck Drivers
+truck = dataset %>% filter(Job.Titles == "MOTOR TRUCK DRIVER")
+summary(truck)
+#Observations
+#1. Minimum hours = 10 / Max hours = 40 / Mean hours = 39.96 / Median = 40
+#2. Minimum rate = 15 / Max rate = 134.40 / Mean rate = 42.56 / Median = 40.27
+#3. 921 hourly workers are Motor Truck Drivers making: Minimum rate 35.33 / Max rate = 39.94 / Mean rate = 39.27 / Median rate = 39.25
+#4. Most of the motor truck drivers are from the Street and Sanitation dept. and they all work 40 hours a week
+```
+
+Departments
+```{r}
+table(dataset$Department)
+
+#total money given to annually paid government workers = $2,398,361,625
+annuallyPaidWorkers = dataset %>% filter(!is.na(Annual.Salary))
+total = sum(annuallyPaidWorkers$Annual.Salary)
+total
+
+#total money given to hourly paid government workers = $507,050,619
+hourlyPaidWorkers = dataset %>% filter(is.na(Annual.Salary))
+hourlyPaidWorkers$Annual.Salary = hourlyPaidWorkers$Annual.Salary %>% replace_na(0)
+hourlyPaidWorkers$Annual.Salary = hourlyPay(hourlyPaidWorkers$Typical.Hours, hourlyPaidWorkers$Hourly.Rate)
+hourlyPaidWorkersTotal = sum(hourlyPaidWorkers$Annual.Salary)
+hourlyPaidWorkersTotal
+
+#average annual salary for all workers = $98,750.84
+annualSalaryWorkers = dataset %>% filter(!is.na(Annual.Salary))
+averageAnnualSalary = mean(annualSalaryWorkers$Annual.Salary)
+averageAnnualSalary
+
+#police dept.
+#average salary = $101,424.9
+police = dataset %>% filter(Department == "POLICE")
+policeSalary = police %>% filter(!is.na(Annual.Salary))
+policeAverageAnnualSalary = mean(policeSalary$Annual.Salary)
+policeAverageAnnualSalary
+
+#water dept.
+#average salary = $99,142.44
+water = dataset %>% filter(Department == "WATER MGMNT")
+water1 = water %>% filter(!is.na(Annual.Salary))
+waterAverageAnnualSalary = mean(water1$Annual.Salary)
+waterAverageAnnualSalary
+
+#trans dept.
+#average salary = $100,408.4
+trans = dataset %>% filter(Department == "TRANSPORTN")
+trans1 = trans %>% filter(!is.na(Annual.Salary))
+transAverageAnnualSalary = mean(trans1$Annual.Salary)
+transAverageAnnualSalary
+
+#aviation dept.
+#average salary = $84,585.2
+aviation = dataset %>% filter(Department == "AVIATION")
+aviation1 = aviation %>% filter(!is.na(Annual.Salary))
+aviationAverageAnnualSalary = mean(aviation1$Annual.Salary)
+aviationAverageAnnualSalary
+
+#fire dept.
+#average salary = $106,029.2
+fire = dataset %>% filter(Department == "FIRE")
+fire1 = fire %>% filter(!is.na(Annual.Salary))
+fireAverageAnnualSalary = mean(fire1$Annual.Salary)
+fireAverageAnnualSalary
+
+#Histograms
+hist(fire$Annual.Salary, xlab = "Annual Salary", col = "forestgreen", main="Fire Dept.")
+hist(aviation$Annual.Salary, xlab = "Annual Salary", col = "forestgreen", main="Aviation Dept.")
+hist(trans$Annual.Salary, xlab = "Annual Salary", col = "forestgreen", main="Transportation Dept.")
+hist(water$Annual.Salary, xlab = "Annual Salary", col = "forestgreen", main="Water Dept,")
+hist(police$Annual.Salary, xlab = "Annual Salary", col = "forestgreen", main="Police Dept.")
+```
+
+Police
+```{r}
+police = dataset %>% filter(Department == "POLICE")
+numOfPolice = nrow(police)
+numOfPolice
+hist(police$Annual.Salary)
+
+#Police Officers - 70% of the police dept. / Salary: Min = 54,672 / Median = 95,586 / Mean = 96,397 / Max = 109,236 / 8876 workers
+officer = police %>% filter(Job.Titles == "POLICE OFFICER")
+numOfOfficer = nrow(officer)
+numOfOfficer
+jobPercentage(numOfOfficer, numOfPolice)
+summary(officer)
+
+#Police sergeant - 9.3% of the police dept. / Salary: Min = 116,094 / Median = 126,504 / Mean = 125,824 / Max = 130,596 / 1178 workers
+sergeant = police %>% filter(Job.Titles == "SERGEANT")
+numOfSergeant = nrow(sergeant)
+numOfSergeant
+jobPercentage(numOfSergeant, numOfPolice)
+summary(sergeant)
+```
+
+Water Management
+```{r}
+water = dataset %>% filter(Department == "WATER MGMNT")
+summary(water)
+numOfWater = nrow(water)
+numOfWater
+hist(water$Annual.Salary)
+
+#Construction Laborers - 22.5% of the water dept. / Salary 45.9 and 40 hours ONLY / 412 workers
+construction = water %>% filter(Job.Titles == "CONSTRUCTION LABORER")
+numOfConstruction = nrow(construction)
+numOfConstruction
+jobPercentage(numOfConstruction, numOfWater)
+summary(construction)
+```
+
+Transportation
+```{r}
+trans = dataset %>% filter(Department == "TRANSPORTN")
+numOfTrans = nrow(trans)
+numOfTrans
+hist(trans$Annual.Salary)
+summary(trans)
+
+#Concrete laborer - 9.9% of the transportation dept. / Hourly rate = 45.9 and 40 hours ONLY / 109 workers
+concrete = trans %>% filter(Job.Titles == "CONCRETE LABORER")
+numOfConcrete = nrow(concrete)
+numOfConcrete
+jobPercentage(numOfConcrete, numOfTrans)
+summary(concrete)
+```
+
+Aviation
+```{r}
+aviation = dataset %>% filter(Department == "AVIATION")
+numOfAviation = nrow(aviation)
+numOfAviation
+hist(aviation$Annual.Salary)
+summary(aviation)
+
+#pool motor truck driver - 19.24% of aviation dept. / 349 workers
+#Hours --> Min = 10 / Median = 40 / Mean = 39.91 / Max = 40
+#Rate --> Min = 21.73 / Median = 39.25 / Mean = 37.31 / Max = 39.25
+poolMotorTruckDriver = aviation %>% filter(Job.Titles == "POOL MOTOR TRUCK DRIVER")
+numOfPoolMotorTruckDriver = nrow(poolMotorTruckDriver)
+numOfPoolMotorTruckDriver
+jobPercentage(numOfPoolMotorTruckDriver, numOfAviation)
+summary(poolMotorTruckDriver)
+```
+
+Fire
+```{r}
+fire = dataset %>% filter(Department == "FIRE")
+numOfFire = nrow(fire)
+numOfFire
+hist(fire$Annual.Salary)
+summary(fire)
+
+#FireFighter EMT - 28.3% of fire dept. / Salary -> Min = 94,152 / Median = 102,372 / Mean = 102,347 / Max = 114,570 / 1362 workers
+firefighterEMT = fire %>% filter(Job.Titles == "FIREFIGHTER-EMT")
+numOfFireFighterEMT = nrow(firefighterEMT)
+numOfFireFighterEMT
+jobPercentage(numOfFireFighterEMT, numOfFire)
+summary(firefighterEMT)
+
+#FireFighter EMT (Recruit) - 15.3% of fire dept. / Salary -> Min = 62,466 / Median = 80,448 / Mean = 76,615 / Max = 84,612 / 736 workers
+firefighterEMTR = fire %>% filter(Job.Titles == "FIREFIGHTER-EMT (RECRUIT)")
+numOfFireFighterEMTR = nrow(firefighterEMTR)
+numOfFireFighterEMTR
+jobPercentage(numOfFireFighterEMTR, numOfFire)
+summary(firefighterEMTR)
+
+#lieutenant EMT - 8.4% of fire dept. / Salary -> Min = 126,840 / Median = 130,908 / Mean = 131,554 / Max = 135,144 / 401 workers
+lieutenantEMT = fire %>% filter(Job.Titles == "LIEUTENANT-EMT")
+numOfLieutenantEMT = nrow(lieutenantEMT)
+numOfLieutenantEMT
+jobPercentage(numOfLieutenantEMT, numOfFire)
+summary(lieutenantEMT)
+```
+
+
+
+
+
+
+
+

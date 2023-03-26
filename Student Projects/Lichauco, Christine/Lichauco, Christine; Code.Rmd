@@ -1,0 +1,97 @@
+---
+title: "slay!"
+author: "Christine"
+date: '2022-06-28'
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <https://urldefense.com/v3/__http://rmarkdown.rstudio.com__;!!DZ3fjg!-dypIZDxuVj_lJRYtMsih3rmAWa8jtvpHAmUXmJf5e_AeGERgr5TDMWQ2QiSnEJZAwg3JMMAzytysM7DKvCRkvFFwhUzIQ$ >.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{data clean}
+subset = school_data %>% filter(City == "Chicago", School.Type == "HIGH SCHOOL")
+chiHSdata = subset%>%select(-c("RCDTS", "Type", "District.Type", "District.Size", "District", "School.Type", "Title.1.Status", "State.Senate.District", "State.Representative.District"))
+chiHSdata$zip.code = c(60625, 60652, 60827, 60623, 60628, 60641, 60609, 60629, 60628, 60619,60636, 60629, 60637, 60632, 60639, 60638, 60615, 60613, 60618, 60624, 60659, 60643, 60653, 60625, 60641, 60660, 60653, 60634, 60626, 60631, 60609, 60625, 60614, 60617, 60622, 60612, 60618, 60617, 60616, 60605, 60639, 60609, 60620, 60628, 60622, 60612, 60632, 60643, 60607, 60608, 60655, 60638, 60628, 60625, 60653, 60610, 60612, 60623, 60634, 60617, 60639, 60624, 60644, 60634, 60640, 60623, 60644, 60640, 60636, 60615, 60623, 60623, 60623, 60623, 60644, 60624, 60609, 60618, 60608, 60622, 60642, 60615, 60624, 60632, 60649, 60652, 60621, 60615, 60621, 60641, 60605, 60612)
+chiHSdata1 = chiHSdata[,-c(2:4,17,21,26:899)]
+cpsHSdata = chiHSdata1[,-c(9,10,11,14,15,16)]
+cpsHSdata <- cpsHSdata %>% rename(student.enrollment = "X..Student.Enrollment") %>% 
+  rename(studentpop.white = "X..Student.Enrollment...White")%>% 
+  rename(studentpop.black = "X..Student.Enrollment...Black.or.African.American")%>% 
+  rename(studentpop.latino = "X..Student.Enrollment...Hispanic.or.Latino")%>% 
+  rename(studentpop.asian = "X..Student.Enrollment...Asian")%>% 
+  rename(studentpop.disabilities = "X..Student.Enrollment...Children.with.Disabilities")%>% 
+  rename(studentpop.IEP = "X..Student.Enrollment...IEP")
+mean = mean(cpsHSdata$student.enrollment)
+mean
+mean1 = mean(cpsHSdata$Student.Attendance.Rate) / 100
+mean1
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{Graphs}
+  north.sideHS = cpsHSdata %>% filter(cpsHSdata$zip.code == 60659 | 
+  cpsHSdata$zip.code == 60647 | cpsHSdata$zip.code == 60614 | 
+   cpsHSdata$zip.code == 60618 | cpsHSdata$zip.code == 60634 | 
+    cpsHSdata$zip.code == 60641 | cpsHSdata$zip.code == 60625 | 
+    cpsHSdata$zip.code == 60630 | cpsHSdata$zip.code == 60646 | 
+    cpsHSdata$zip.code == 60631 | cpsHSdata$zip.code == 60657 | 
+    cpsHSdata$zip.code == 60613 | cpsHSdata$zip.code == 60640 | 
+    cpsHSdata$zip.code == 60660 | cpsHSdata$zip.code == 60645)
+south.sideHS = cpsHSdata %>% filter (cpsHSdata$zip.code == 60616 | 
+  cpsHSdata$zip.code == 60609 | cpsHSdata$zip.code == 60607 | 
+    cpsHSdata$zip.code == 60605 | cpsHSdata$zip.code == 60632 | 
+    cpsHSdata$zip.code == 60653 | cpsHSdata$zip.code == 60653 | 
+    cpsHSdata$zip.code == 60615 | cpsHSdata$zip.code == 60652 | 
+    cpsHSdata$zip.code == 60629 | cpsHSdata$zip.code == 60637 | 
+    cpsHSdata$zip.code == 60638 | cpsHSdata$zip.code == 60636 | 
+    cpsHSdata$zip.code == 60621 | cpsHSdata$zip.code == 60628 | 
+    cpsHSdata$zip.code == 60643 | cpsHSdata$zip.code == 60617 | 
+    cpsHSdata$zip.code == 60633 | cpsHSdata$zip.code == 60649 |
+    cpsHSdata$zip.code == 60619 | cpsHSdata$zip.code == 60620)
+west.sideHS = cpsHSdata %>% filter (cpsHSdata$zip.code == 60644 | 
+  cpsHSdata$zip.code == 60639 | cpsHSdata$zip.code == 60651 | 
+    cpsHSdata$zip.code == 60624 | cpsHSdata$zip.code == 60612 | 
+    cpsHSdata$zip.code == 60622 | cpsHSdata$zip.code == 60623 | 
+    cpsHSdata$zip.code == 60608)
+downtownHS = cpsHSdata %>% filter (cpsHSdata$zip.code == 60610 | 
+ cpsHSdata$zip.code == 60611 | cpsHSdata$zip.code == 60601 | cpsHSdata$zip.code == 60654)
+
+#Attendance 
+plot(north.sideHS$student.enrollment, north.sideHS$Student.Attendance.Rate, 
+     xlab = "Student Enrollment", 
+     ylab = "Attendance Rate", 
+     main = "Scatter Plot of Attendance Rate v. Student Enrollment", pch = 19, 
+     col = "red")
+points(west.sideHS$student.enrollment, west.sideHS$Student.Attendance.Rate, 
+       pch=19, col = "blue")
+points(south.sideHS$student.enrollment, south.sideHS$Student.Attendance.Rate, 
+       pch=19, col = "purple")
+points(downtownHS$student.enrollment, downtownHS$Student.Attendance.Rate, 
+       pch=19, col = "orange")
+
+#Mobility
+west.sideHS <- west.sideHS [-c(26),]
+par(mfrow=c(1,3))
+hist(west.sideHS$Student.Mobility.Rate, xlab = "Mobility Rate",
+     main = "West Side Mobility Rates", col = "salmon")
+hist(north.sideHS$Student.Mobility.Rate, xlab = "Mobility Rate", 
+     main = "North Side Student Mobility Rates", col = "sky blue")
+hist(south.sideHS$Student.Mobility.Rate, xlab = "Mobility Rate",
+     main = "South Side Student Mobility Rates", col = "pink")
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

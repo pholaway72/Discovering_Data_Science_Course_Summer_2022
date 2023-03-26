@@ -1,0 +1,58 @@
+---
+title: "Crimes"
+output: html_document
+date: '2022-07-13'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <https://urldefense.com/v3/__http://rmarkdown.rstudio.com__;!!DZ3fjg!_MrODM1DAZz3VuOxa01PtBFLcvvghhVvwMepD2dS9hujWRZJjO_W8ybKJM7xw0ap4DM1GbQxclm6r3hmHEbfRNkEhMo$ >.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+Crimes <- read.csv("~/Downloads/Crimes_-_2001_to_Present.csv", stringsAsFactors=FALSE)
+library(tidyverse)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+```{r}
+filter(Crimes, Year == "2016", Primary.Type == "HOMICIDE", Arrest == "true")
+filter(Crimes, Year == "2016", Primary.Type == "HOMICIDE", Arrest == "false")
+```
+
+
+```{r}
+filter(Crimes, Year == "2001", Arrest == "true", Domestic == "true", Primary.Type == "THEFT")
+filter(Crimes, Year == "2022", Arrest == "true", Domestic == "true", Primary.Type == "THEFT")
+```
+
+```{r}
+hist(Crimes$Year, border = "purple", col = "pink", main = "Crimes 2001-2022", xlab = "Year")
+points(mean(Crimes$Year),col="blue",pch=19)
+```
+
+
+```{r}
+hist(Crimes$Community.Area, border = "sienna", col = rainbow(100), main = "Crime rate in community area", 
+     xlab = "Community Area")
+```
+```{r}
+Crimes = Crimes %>% select(-c("X.Coordinate", "Y.Coordinate", "Updated.On", "Latitude", "Longitude", "Location",
+                              "Historical.Wards.2003.2015","Community.Areas", "Census.Tracts", "Wards", "
+                              Boundaries...ZIP.Codes", "Police.Districts", "Police.Beats"))
+```
+
+
+```{r}
+filter(Crimes, Year == "2001", Arrest == "true", Domestic == "true", Primary.Type == "ROBBERY")
+filter(Crimes, Year == "2022", Arrest == "true", Domestic == "true", Primary.Type == "ROBBERY")
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

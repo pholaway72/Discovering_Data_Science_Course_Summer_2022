@@ -1,0 +1,123 @@
+---
+title: "Lab Confidence"
+author: "Abhi Thanvi, Paul Holaway"
+date: "July 12th, 2022"
+output: pdf_document
+toc: True
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+\newpage
+
+# Lab Confidence
+
+## Welcome
+
+Just like learning a new spoken language, you will not learn the language without practice. Labs are an important part of this course. Collaboration on labs is **extremely encouraged**. If you find yourself stuck for more than a few minutes, ask a neighbor or course staff for help. When you are giving help to your neighbor, explain the **idea and approach** to the problem without sharing the answer itself so they can figure it out on their own. This will be better for them and for you. For them because it will stick more and they will have a better understanding of the concept. For you because if you can explain it to other students, that means you understand it better too.
+
+## The Idea of this Lab
+
+I can confidently say that Confidence Interval is a huge chunk of statistic that falls under the statistical inference section. Through this lab, you will be exploring the application and calculation of Confidence Intervals using `R`. Understanding Confidence Interval (CI) is crucial to understand what we do for the time that is left for us. I am not going to huge description for today's lab as you probably understand the importance of this topic and I also want to give you time to do this lab and maybe ask questions for project. LET'S GO!
+
+  **"Confidence Interval is like giving an estimated range for answer, which you aren't 100% sure about" -  Woke Abhi**
+
+## Problem 1: Z vs. t, You Tell Me
+
+**Question 1:** You are trying to find the 98% confidence interval from a population whose size is 100. You know the Standard Deviation too! Do you use Z-Interval or t-interval? 
+
+**Answer:** (Student Response Here) 
+
+**Question 2:** You are trying to find the 85% confidence interval from a population whose size is 1000. You do not know the Standard Deviation. Do you use Z-Interval or t-interval? If you choose Z-interval, explain why (Hint: Something we learned in the last few classes)?
+
+**Answer:** (Student Response Here) 
+
+**Question 3:** You are trying to find the 95% confidence interval from a population whose size is 10. You do not know the Standard Deviation. Do you use Z-Interval or t-interval? 
+
+**Answer:** (Student Response Here)
+
+**Question 4:** You are trying to find the 90% confidence interval from a population whose size is 5. You do know the Standard Deviation. Do you use Z-Interval or t-interval? 
+
+**Answer:** (Student Response Here)
+\newpage
+
+## Problem 2: [Age](https://www.youtube.com/watch?v=OVFsq9FQBlc) Is Just an Interval
+
+**Question 1:** Abhi wants you to create a 90% and 98% confidence interval for the average age for a batter in MLB. Again, I don't know Abhi's fascination with age of people, but let's just ignore that. The data for this is in the `MLB_Batters` data set. Create the two confidence intervals.
+
+**Answer:** 
+```{r}
+#Imports
+
+
+#Common Setup Work for both CIs
+
+
+#90% CI Work
+
+#98% CI Work
+
+
+#Print Answers
+
+```
+
+**Question 2:** With your group, discuss what confidence interval mean? Write the answer to what your second confidence interval means in context from question 1.
+
+**Answer:** (Student Response Here)
+\newpage
+
+## Problem 3: Shoes!
+
+**Question 1:** Abhi is trying to convince Paul that people own more than 3 pairs of shoes on average. Help Abhi do so by creating a 95% confidence interval for the average number of shoes that students own. Use the `hello` data set. Remember that this is a sample of UIUC STAT107 students.   
+
+**Answer:** (Either Z or t is fine here.)
+```{r}
+#Imports
+
+
+#Common Setup Work
+
+#CI
+
+#Print Answer
+
+```
+
+**Question 2:** With your group, discuss what confidence interval mean? Write the answer to what your confidence interval means in context from question 1.
+
+**Answer:** (Student Response Here)   
+\newpage
+
+## Problem 4: Narrower or Wider
+
+**Question 1:** Assuming the standard deviation remains the same. If I increase my confidence level from 90% to 95%, would my confidence interval be wider or narrower? In other words, will the range of my interval be larger or smaller? 
+
+*The answer should be contextualized or in your own words. Providing numbers or math is not recommended* 
+
+**Answer:** (Student Response Here)
+
+**Question 2:** Assuming the standard deviation and CI remains the same. If I increase my sampling size, would my confidence interval be wider or narrower? In other words, will the range of my interval be larger or smaller? 
+
+*The answer should be contextualized or in your own words. Providing numbers or math is not recommended* 
+
+**Answer:** (Student Response Here) 
+
+**Question 3:** After finishing the entire lab. With your group, discuss and report how to change the width of your confidence interval. Keep in mind, we cannot change the population and it's standard deviation. 
+
+*Hint: Think about how Confidence Level and Sample Size affect the specific parts of Confidence intervals?*
+
+**Answer:** (Student Response Here) 
+
+## Project Questions
+
+Feel free to work on your project if there is any time left after the labs. Paul and I are here to answer any questions during the second half of the lab times to answer mainly project related questions, but general questions are more than welcome too. Feel free to discuss among your group about any project ideas or help each other out. Remember collaboration is promoted, plagiarism is not! :)
+
+## Submission
+Once you have finished your lab...
+
+1. Go to the top left and click `File` and `Save`.
+2. Click on the `Knit` button to convert this file to a PDF.
+3. Submit **BOTH** the `.Rmd` file and `.pdf` file to Blackboard by 11:59 PM tonight.

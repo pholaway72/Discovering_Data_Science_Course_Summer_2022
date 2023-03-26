@@ -1,0 +1,58 @@
+---
+title: "Final Project"
+author: "Aditya Simhadri"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+Crimes <- read.csv("~/Desktop/Digital Scholars/Crimes_-_2001_to_present.csv", stringsAsFactors=TRUE)
+```
+
+```{r}
+subset = Crimes %>% select(-c("ID","Case.Number","IUCR","Beat","Ward","Community.Area","FBI.Code",
+                              "Historical.Wards.2003.2015","Community.Areas","Census.Tracts","Wards"
+                              ,"Boundaries...ZIP.Codes","Police.Districts","Police.Beats","District",
+                              "X.Coordinate","Y.Coordinate","Updated.On"))
+
+```
+
+```{r}
+
+table(subset$Primary.Type)
+
+common = subset %>% filter(Primary.Type == "CRIMINAL DAMAGE" | Primary.Type == "NARCOTICS" |
+                           Primary.Type == "THEFT" | Primary.Type == "BATTERY")
+
+barplot(c(792562,722358,1467228,1271442), names.arg = c("CRIMINAL DAMAGE","NARCOTICS","THEFT","BATTERY"),xlab = "Charges",ylab = "Frequency", main = "Common Charges",col = "salmon",cex.names = .8)
+
+
+theft = subset %>% filter(Primary.Type == "THEFT") 
+
+cicerolocation= theft %>% filter(Block == "076XX S CICERO AVE") %>% group_by(Location) %>% tally %>% filter(n > 10)
+
+block = theft %>% group_by(Block) %>% tally 
+block = block %>% filter(n >= 6000)
+
+barplot(c(6685,6963,9258,6922), names.arg = c("08XX N MICHIGAN AVE","0000X N STATE ST","001XX N STATE ST","076XX S CICERO AVE"),xlab = "Streets",ylab = "Frequency", main = "Theft by street", col = "khaki1", cex.names = .7)
+
+michigan = theft %>% filter(Block == "008XX N MICHIGAN AVE") %>% group_by(Location.Description) %>% tally %>% filter(n > 250)
+NState1 = theft %>% filter(Block == "0000X N STATE ST") %>% group_by(Location.Description) %>% tally %>% filter(n > 250)
+NState2 = theft %>% filter(Block == "001XX N STATE ST") %>% group_by(Location.Description) %>% tally %>% filter(n > 250)
+cicero = theft %>% filter(Block == "076XX S CICERO AVE") %>% group_by(Location.Description) %>% tally %>% filter(n > 250)
+
+barplot(c(4036,362,458,1152), names.arg = c("DEPARTMENT STORE","OTHER","	
+RESTAURANT","SMALL RETAIL STORE"),xlab = "Descriptions",ylab = "Frequency", main = "Michigan Ave Theft Description", col = "seagreen1",cex.names = .75)
+
+barplot(c(4591,328,641,1087), names.arg = c("DEPARTMENT STORE","OTHER","	
+PARKING LOT/GARAGE","SMALL RETAIL STORE"),xlab = "Descriptions",ylab = "Frequency", main = "Cicero Ave Theft Description", col = "skyblue1",cex.names = .65)
+
+barplot(c(6633,342,393,814), names.arg = c("DEPARTMENT STORE","CTA TRAIN","	
+RESTAURANT","SMALL RETAIL STORE"),xlab = "Descriptions",ylab = "Frequency", main = "N State St Theft Description", col = "mediumpurple1",cex.names = .65)
+
+```
+
+
