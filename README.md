@@ -21,7 +21,7 @@ Discovering Data Science is an introduction to topics that intersect between sta
 
 I would like to thank the following individuals for their aid in making this course possible.
 
-- [Dave Dalpiaz](https://daviddalpiaz.org/); The University of Illinois Urbana-Champaign, STAT385 Professor
+- [Dr. Dave Dalpiaz](https://daviddalpiaz.org/); The University of Illinois Urbana-Champaign, STAT385 Professor
 - [Dr. Karle Flanagan](https://kflan.stat.illinois.edu/); The University of Illinois Urbana-Champaign, STAT107 Professor, Faculty Advisor
 - [Dr. Wade Fagen-Ulmschneider](https://waf.cs.illinois.edu/); The University of Illinois Urbana-Champaign, STAT107 Professor
 - [Mark Harris](https://dpi.uillinois.edu/team/mark-harris-2/); Discovery Partners Institute
